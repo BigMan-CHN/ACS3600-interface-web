@@ -1285,6 +1285,28 @@ int CAnalyzeParaProc::AnalyParaCmdParseCommandHandle(char **str, char **arg, cha
 			}
 
 		}
+		if(!strcmp(CMethod.c_str(),"UartSearchCameraTableControlCmd"))
+		{
+			if (StringCmp(str[1], "conf"))
+			{
+				if (!IpAvalbCheck(arg[0])) {
+					mLogError("GetWebHostConfig ip_avalb_check LogInfo, ip = "<<arg[0]);
+					return ARG_STR_ERR;
+				}
+				if (!IpAvalbCheck(arg[1])) {
+					mLogError("GetWebHostConfig ip_avalb_check LogInfo, netmask = "<<arg[1]);
+					return ARG_STR_ERR;
+				}
+				if (!IpAvalbCheck(arg[2])) {
+					mLogError("GetWebHostConfig ip_avalb_check LogInfo, gateway = "<<arg[2]);
+					return ARG_STR_ERR;
+				}		
+				//printf("AnalyParaCmdParseCommandHandle %s %s %s\n", arg[0], arg[1], arg[2]);
+				_ip = arg[0];
+
+			}
+
+		}
 	}
 	else if (CHNSYS_SYS_OP == cmd_id)
 	{
