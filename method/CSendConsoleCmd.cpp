@@ -24,9 +24,9 @@ bool CSendConsoleCmd::GetConsoleConfig(string Cmd,CData &oResult, char *cResult)
     memcpy(cCmdSend, Cmd.c_str(), strlen(Cmd.c_str()));
 
     MPSOperationRes opResCode = eMPSResultOK;
-	ResponseCode resCode = _client->GetSerialNew(SerialID, cCmdSend, cCmdLength, opResCode, oResult,cResult);
-	mLogDebug("cResult:"<<cResult);
-    //ResponseCode resCode = _client->GetConsoleNew(cCmdSend,cCmdLength,opResCode,oResult,cResult);
+	// ResponseCode resCode = _client->GetSerialNew(SerialID, cCmdSend, cCmdLength, opResCode, oResult,cResult);
+    ResponseCode resCode = _client->GetConsoleNew(cCmdSend,cCmdLength,opResCode,oResult,cResult);
+    mLogDebug("cResult:"<<cResult);
     if(resCode != eResponseCodeSuccess){
         mLogError("GetConsoleNew(...) error:"<<resCode);
         return false;
@@ -95,11 +95,11 @@ InterfaceResCode CSendConsoleCmd::SendConsoleCmd(string &sResult, string cmd)
 	    }
     }
 #endif 
-//    if( _AnalyParas.ConvertSTRING2CJSONSendConsoleCmd(oResult, cResult) == false){
-//        mLogError("Failed to run  ConvertSTRING2CJSONSendConsoleCmd(...)");
-//        return eInterfaceResCodeError;
-//    }
-	cJSON_AddItemToObject(_result, "cResult", cJSON_CreateString(cResult));
+   if( _AnalyParas.ConvertSTRING2CJSONSendConsoleCmd(oResult, cResult) == false){
+       mLogError("Failed to run  ConvertSTRING2CJSONSendConsoleCmd(...)");
+       return eInterfaceResCodeError;
+   }
+	// cJSON_AddItemToObject(_result, "cResult", cJSON_CreateString(cResult));
 
     sResult = ComposeResult();
     return eInterfaceResCodeSuccess;

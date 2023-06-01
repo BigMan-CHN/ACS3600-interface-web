@@ -1,3 +1,11 @@
+/*
+ * @Copyright: 
+ * @file name: File name
+ * @Data: Do not edit
+ * @LastEditor: 
+ * @LastData: 
+ * @Describe: 
+ */
 #include "CGetWebUartConf.h"
 #include <boost/lexical_cast.hpp>
 

@@ -851,14 +851,14 @@ ResponseCode MPSClient::socketSendConsoleCmd(string sModule, string sMethod, CDa
 #if 1
     do{
         //连接主机
-        if( client.Connect(this->_ip,6180) == false ){
+        if( client.Connect(this->_ip,8060) == false ){
             client.Close();     // 断开连接
             mLogError("Failed to connect.ip:"<<this->_ip<<",port:"<<this->_port);
             oResult.RefMap()[SKYVIS_TRANSMIT_TRANSMITCODE] = SVSLONG32(eResponseCodeNoConnected);
             break;
         }
         // 向主机发送信息并接受主机返回信息
-        client.Execute(sModule,sMethod,oParams,cCmdSend,cCmdLength,oResult,cRecult,25000) ;
+        client.Execute(sModule,sMethod,oParams,cCmdSend,cCmdLength,oResult,cRecult,1000) ;
         res = eResponseCodeSuccess ;
 #if 0
 	int iRecvLength = (cRecult[2] << 8) + cRecult[3] + 4;

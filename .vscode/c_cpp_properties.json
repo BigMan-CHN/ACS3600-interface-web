@@ -6,7 +6,14 @@
                 "${workspaceFolder}/**",
                 "Z:\\develop\\boost_1_69_0",
                 "Z:\\develop\\log4cplus-1.2.1\\include",
-                "Z:\\develop\\cJSONFiles\\cJSON"
+                "Z:\\develop\\cJSONFiles\\cJSON",
+                "Z:\\develop\\libcommon_1.69.0",
+                "Z:\\develop\\libcommon_1.69.0\\src\\LibTransmit",
+                "Z:\\develop\\libMLog",
+                "Z:\\develop\\tinyxml2",
+                "Z:\\develop\\libxml2-v2.9.13\\install\\include\\libxml2",
+                "Z:\\develop\\sqlite-autoconf-3380500\\_install\\include",
+                "Z:/develop/libcommon_1.69.0/src/LibXML"
             ],
             "defines": [
                 "_DEBUG",
