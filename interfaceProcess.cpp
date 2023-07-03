@@ -1,3 +1,11 @@
+/*
+ * @Copyright: 
+ * @file name: File name
+ * @Data: Do not edit
+ * @LastEditor: 
+ * @LastData: 
+ * @Describe: 
+ */
 #include "interfaceProcess.h"
 #include "interfaceDefines.h"
 #include "interfaceParams.h"
@@ -5547,6 +5555,18 @@ string InterfaceProcess::processRequest(string &requestStr)
 		    CGetWebUartConf GetGPIOConfig(this->_ip);
 		    string sResult;
 		    resCode = GetGPIOConfig.GetGPIOConfig(sResult, requestStr);
+		    //设置返回信息 内容列表
+		    response.setResponseResults(sResult);
+		    break;
+        }
+        else if (!strcmp(sMethod.c_str(), "GetDiskState"))
+        {
+		    mLogInfo("GetDiskState");
+
+		    //printf("SetRecCtrlStart RecMode %d ChnID %d TaskId %s Title %s\n", RecMode, ChnID, TaskId.c_str(), Title.c_str());
+		    CGetWebHostConfig GetDiskState(this->_ip);
+		    string sResult;
+		    resCode = GetDiskState.GetDiskState(sResult);
 		    //设置返回信息 内容列表
 		    response.setResponseResults(sResult);
 		    break;
