@@ -200,18 +200,128 @@ bool CGetWebHostConfig::GetDiskStateInner(CData &oResult, char *cResult)
 
     return true;
 }
-InterfaceResCode CGetWebHostConfig::GetDiskState(string &sResult)
+
+bool CGetWebHostConfig::GetAudioAllGainInner(CData& oResult, char* cResult)
+{
+	mLogDebug("run GetAudioAllGainInner(...)");
+		
+	//获取状态
+	int SerialID = 1;//串口透传，串口1
+	
+	int val = 0;
+	int Flag = 0;
+	int  cCmdLength   = 0;
+	char cCmdSend[1024]   = {0};
+	
+	//<指令类型,操作类型,输入/输出,通道,值>
+	
+	sprintf(cCmdSend,"<9,2,2,0,0>");
+
+	//sprintf(cCmdSend,INTERFACE_GET_AUDIO_GAIN_CONF_SENDCMD, CtrlType, ChnNum, val);
+
+	
+	cCmdLength = strlen(cCmdSend);
+	
+	MPSOperationRes opResCode = eMPSResultOK;
+ReSend:	
+	//发送cCmdSend信息给服务器
+	ResponseCode resCode = _client->GetSerialNew(SerialID, cCmdSend, cCmdLength, opResCode, oResult,cResult);
+	mLogDebug("GetAudioAllGainInner cResult:"<<cResult);
+	
+	if(resCode != eResponseCodeSuccess && resCode == eResponseCodeErrorRecvTimeOut){
+		
+		cJSON_AddItemToObject(_result, "AudioBoardState", cJSON_CreateNumber(0));
+		return true;
+	}
+	else if(resCode != eResponseCodeSuccess && resCode != eResponseCodeErrorRecvTimeOut)
+	{
+		mLogError("GetConsoleNew(...) error:"<<resCode);
+		return false;		
+	}
+		
+	 if(!strcmp(cResult, "<error>"))//发送指令格式错误，Business直接返回此数据
+	{
+		if (Flag < 2)
+		{
+			mLogDebug("GetAudioAllGainInner Send GetSerialNew:"<<Flag);
+			Flag++;
+			goto ReSend;
+		}else{
+			mLogError("GetAudioAllGainInner GetSerialNew error:"<<Flag);
+			//cJSON_AddItemToObject(_result, "AudioBoardState", cJSON_CreateNumber(2));
+			return false;
+		}
+	}
+
+	//解析
+	char *arg[40] = {};
+	for (int i = 0; i < 40; i ++)
+	{
+		arg[i] = (char *)calloc(1, strlen(cResult)+1);
+		if(NULL == arg[i]) 
+		{
+		   mLogError("calloc is error\n");
+		   return false;
+		}
+	}
+	
+	//mLogDebug("cResult:"<<cResult);
+	
+	//命令格式cResult: "<9（指令类型）,2（操作类型，1:SET，2:GET）,2（输入2/输出1）,1（通道0~31）,80（值）,ok（状态）>"
+	sscanf(cResult, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%s",\
+	arg[0], arg[1], arg[2], arg[3], arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],\
+	arg[10], arg[11], arg[12], arg[13], arg[14], arg[15], arg[16], arg[17], arg[18], arg[19],\
+	arg[20], arg[21], arg[22], arg[23], arg[24], arg[25], arg[26], arg[27], arg[28], arg[29], \
+	arg[30], arg[31], arg[32], arg[33], arg[34], arg[35], arg[36], arg[37], arg[38], arg[39]);
+	//2:输入
+	if(!strcmp(arg[2], "2"))
+	{	//判断是否出错
+		if(strcmp(arg[27], "ok>"))
+	    {
+		  mLogError("GetAudioAllGainInner input Get gain failed !!!\n");
+		  cJSON_AddItemToObject(_result, "AudioBoardState", cJSON_CreateNumber(2));
+	    }
+	    else
+	    {
+			cJSON_AddItemToObject(_result, "AudioBoardState", cJSON_CreateNumber(1));
+			mLogDebug("GetAudioAllGainInner input Get gain Success !!!\n");
+	    }
+	}
+	else
+	{  //1:输出
+		if(strcmp(arg[23], "ok>"))
+		{
+			 mLogError("GetAudioAllGainInner output Get gain failed !!!\n");
+			 cJSON_AddItemToObject(_result, "AudioBoardState", cJSON_CreateNumber(2));
+
+		}
+		else
+	    {
+			cJSON_AddItemToObject(_result, "AudioBoardState", cJSON_CreateNumber(1));
+			mLogDebug("GetAudioAllGainInner output Get gain Success !!!\n");
+	    }
+	}
+	return true;
+
+}
+
+InterfaceResCode CGetWebHostConfig::GetHardDevsState(string &sResult)
 {
     //TODO
-    mLogInfo("GetDiskState...");
+    mLogInfo("GetHardDevsState...");
     CData oResult = SVSMAP();
     char cResult[8192] = {0};
-	string Method = "GetDiskState";
+	string Method = "GetHardDevsState";
 #if 1
     if(GetDiskStateInner(oResult, cResult) == false){
         mLogError("Failed to run  GetDiskStateInner(...)");
         return eInterfaceResCodeError;
     }
+
+//    if(GetAudioAllGainInner(oResult, cResult) == false){
+//	    mLogError("Failed to run  GetAudioAllGainInner(...)");
+//	    return eInterfaceResCodeError;
+//    }
 #endif 
     //getMPSConfig(oResult, cResult);
 #if 0

@@ -43,7 +43,7 @@ public:
      */
     InterfaceResCode GetWebHostConfig(string &sResult);
 
-    InterfaceResCode GetDiskState(string &sResult);
+    InterfaceResCode GetHardDevsState(string &sResult);
 
 private:
     //合成返回信息
@@ -59,6 +59,8 @@ private:
     bool getMPSConfig(CData &oResult, char *cResult);
 
     bool GetDiskStateInner(CData &oResult, char *cResult);
+
+	bool GetAudioAllGainInner(CData& oResult, char* cResult);
 
 private:
     //待控制设备ip,端口号,超时时间
